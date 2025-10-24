@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  # --- SERVICIO DE BASE DE DATOS (MySQL) ---
+  db_Mandujano:
+    image: mysql:8.0
+    container_name: db_Mandujano
+    ...
+
+  # --- SERVICIO DE BACKEND (API Node.js) ---
+  backend_eduardo:
+    build: 
+      context: ./backend
+    container_name: backend_eduardo
+    ...
+
+  # --- SERVICIO DE FRONTEND (React App) ---
+  frontend_eduardo:
+    build:
+      context: ./frontend
+    container_name: frontend_eduardo
+    ...
