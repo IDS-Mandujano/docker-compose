@@ -1,22 +1,58 @@
 version: '3.8'
 
 services:
-  # --- SERVICIO DE BASE DE DATOS (MySQL) ---
+  # 1. SERVICIO DE BASE DE DATOS (MySQL)
   db_Mandujano:
     image: mysql:8.0
     container_name: db_Mandujano
-    ...
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: una_contraseña_muy_segura_para_aws
+      MYSQL_DATABASE: db_eduardo
+      MYSQL_USER: usuario_db
+      MYSQL_PASSWORD: password_db
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - mi_red_app
 
-  # --- SERVICIO DE BACKEND (API Node.js) ---
+  # 2. SERVICIO DE BACKEND (API Node.js)
   backend_eduardo:
     build: 
-      context: ./backend
+      context: ./Api
     container_name: backend_eduardo
-    ...
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db_Mandujano
+      DB_USER: usuario_db
+      DB_PASSWORD: password_db
+      DB_NAME: db_eduardo
+    depends_on:
+      - db_Mandujano
+    networks:
+      - mi_red_app
 
-  # --- SERVICIO DE FRONTEND (React App) ---
+  # 3. SERVICIO DE FRONTEND (React App)
   frontend_eduardo:
     build:
       context: ./frontend
     container_name: frontend_eduardo
-    ...
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend_eduardo
+    networks:
+      - mi_red_app
+
+# --- DEFINICIÓN DE LA RED INTERNA ---
+networks:
+  mi_red_app:
+    driver: bridge
+
+# --- DEFINICIÓN DEL VOLUMEN PERSISTENTE ---
+volumes:
+  db-data:
+    driver: local
