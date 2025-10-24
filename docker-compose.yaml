@@ -18,6 +18,7 @@ services:
     networks:
       - mi_red_app
 
+
   # 2. SERVICIO DE BACKEND (API Node.js)
   backend_eduardo:
     build: 
@@ -40,6 +41,8 @@ services:
   frontend_eduardo:
     build:
       context: ./frontend
+      args:
+        - VITE_API_URL=${VITE_API_URL}
     container_name: frontend_eduardo
     restart: always
     ports:
@@ -54,7 +57,6 @@ networks:
   mi_red_app:
     driver: bridge
 
-# --- DEFINICIÓN DEL VOLUMEN PERSISTENTE ---
 volumes:
   db-data:
     driver: local
